@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Built-By: ramazan
+Build-Jdk: 11.0.7
+Implementation-Title: trafficanalyzerviewer
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: trafficanalyzerviewer
+Implementation-URL: https://projects.spring.io/spring-boot/#/spring-boot
+ -starter-parent/trafficanalyzerviewer
+Created-By: Maven Integration for Eclipse
+
