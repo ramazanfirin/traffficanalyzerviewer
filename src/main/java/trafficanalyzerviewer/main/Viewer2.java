@@ -70,7 +70,7 @@ import uk.co.caprica.vlcj.discovery.NativeDiscovery;
  * <p>
  * Specify a single MRL to play on the command-line.
  */
-public class Viewer extends ViewerBase{
+public class Viewer2 extends ViewerBase{
 	
 	final String url = "rtsp://192.168.173.217:8085";
 	final String url2 ="http://wmccpinetop.axiscam.net/mjpg/video.mjpg";
@@ -86,7 +86,6 @@ public class Viewer extends ViewerBase{
 	Camera camera3 ;
 	Camera camera4 ;
 
-//	Viewer2 viewer2 = new Viewer2(	""		);
 	
     public static void main(final String[] args) throws Exception {
     	new NativeDiscovery().discover();
@@ -94,13 +93,12 @@ public class Viewer extends ViewerBase{
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Viewer("");
-//                new Viewer2("");
+                new Viewer2("");
             }
         });
     }
 
-    public Viewer(String mrl) {
+    public Viewer2(String mrl) {
        super(mrl);
 
     }
@@ -163,12 +161,27 @@ public class Viewer extends ViewerBase{
 		camera4.setShow(false);
 		
 		cameraList.add(camera1);
-//		cameraList.add(camera2);
-//		cameraList.add(camera3);
-//		cameraList.add(camera4);
-//		
+		cameraList.add(camera2);
+		cameraList.add(camera3);
+		cameraList.add(camera4);
+		
 		setFrameLayout();
 	}
+    
+//	public void prepareCameraConnection() {
+//		cameraList.clear();
+//		if(addAllCameras) {
+//			cameraList.add(camera1);
+//			cameraList.add(camera2);
+//			cameraList.add(camera3);
+//			cameraList.add(camera4);
+//		}else {
+//			cameraList.add(camera1);
+//		}
+//		addAllCameras = !addAllCameras;
+//	}
 
+	
+	
 }
 

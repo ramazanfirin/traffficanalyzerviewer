@@ -181,14 +181,14 @@ public class DirectTestPlayer {
 //        	}
         	
             /* RGB to GRAYScale conversion example */
-            for(int i=0; i < data.length; i++){
-                int argb = data[i];
-                int b = (argb & 0xFF);
-                int g = ((argb >> 8 ) & 0xFF);
-                int r = ((argb >> 16 ) & 0xFF);
-                int grey = (r + g + b + g) >> 2 ; //performance optimized - not real grey!
-                data[i] = (grey << 16) + (grey << 8) + grey;
-            }
+//            for(int i=0; i < data.length; i++){
+//                int argb = data[i];
+//                int b = (argb & 0xFF);
+//                int g = ((argb >> 8 ) & 0xFF);
+//                int r = ((argb >> 16 ) & 0xFF);
+//                int grey = (r + g + b + g) >> 2 ; //performance optimized - not real grey!
+//                data[i] = (grey << 16) + (grey << 8) + grey;
+//            }
             imagePane.repaint();
         }
     }

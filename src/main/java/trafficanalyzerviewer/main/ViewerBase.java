@@ -99,7 +99,7 @@ public abstract class ViewerBase {
     final String murl2 = "C:\\Users\\ramazan\\Downloads\\bandicam_output.mp4";
 	
     List<Camera> cameraList = new ArrayList<Camera>();
-    
+    public Boolean addAllCameras=true;
     
 	final MediaPlayerFactory factory = new MediaPlayerFactory();
 	Frame f= new Frame("Test Player");
@@ -119,8 +119,8 @@ public abstract class ViewerBase {
 
     public ViewerBase(String mrl) {
 
-   	f.setSize(1280, 720);
-//    	f.setExtendedState(Frame.MAXIMIZED_BOTH);
+//   	f.setSize(1280, 720);
+ 	f.setExtendedState(Frame.MAXIMIZED_BOTH);
         f.setBackground(Color.black);
         f.setVisible(true);
         //f.setLayout(new BorderLayout());
@@ -152,9 +152,11 @@ public abstract class ViewerBase {
     }
     
     protected void addCameras() {
-    	for (Camera camera : cameraList) {
-    		addMediaPlayer(camera);
-		}
+    	
+	    	for (Camera camera : cameraList) {
+	    		addMediaPlayer(camera);
+			}
+    	
     }
     
     public void addMediaPlayer(Camera camera) {
@@ -163,24 +165,25 @@ public abstract class ViewerBase {
     	camera.setEmbeddedMediaPlayer(mediaPlayer);
     	
     	Canvas vs = new Canvas();
-    	vs.setSize(1290, 740);
+    	//vs.setSize(1290, 740);
     	CanvasVideoSurface videoSurface = factory.newVideoSurface(vs);
         mediaPlayer.setVideoSurface(videoSurface);
         camera.setCanvas(vs);
         camera.setCanvasVideoSurface(videoSurface);
+//        camera.getCanvas().setVisible(camera.getShow());
         
         //        f.add(vs,BorderLayout.CENTER);
         f.add(vs);
         AnnotationWindow aw = new AnnotationWindow(f, videoSurface.canvas(), mediaPlayer,camera);
         mediaPlayer.setOverlay(aw);
-        mediaPlayer.enableOverlay(true);
+//        mediaPlayer.enableOverlay(true);
         mediaPlayer.playMedia(camera.getConnectionUrl());
         mediaPlayer.pause();
 
 //        mediaPlayer.setSubTitleFile(null);
         
 //        mediaPlayer.
-        setFrameLayout();
+      
     }
 
     public void setFrameLayout() {
@@ -193,6 +196,7 @@ public abstract class ViewerBase {
     }
     
     public abstract void prepareCameras();
+//    public abstract void prepareCameraConnection();
     
     public void addListeners() {
     	f.addKeyListener(new KeyAdapter() {
@@ -222,7 +226,11 @@ public abstract class ViewerBase {
                         break;	
                     case KeyEvent.VK_4:
                     	lineCrossed(4l);
-                        break;	    
+                        break;
+                    case KeyEvent.VK_5:
+//                    	prepareCameraConnection();
+//                    	setFrameLayout();
+                        break;    
                 }
             }
         });

@@ -17,7 +17,7 @@
  * Copyright 2009-2018 Caprica Software Limited.
  */
 
-package trafficanalyzerviewer.directplayer;
+package trafficanalyzerviewer.directplayer.overlay;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -27,19 +27,27 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Polygon;
-import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
+import trafficanalyzerviewer.camera.Camera;
+import trafficanalyzerviewer.camera.Line;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.direct.BufferFormat;
 import uk.co.caprica.vlcj.player.direct.BufferFormatCallback;
 import uk.co.caprica.vlcj.player.direct.DirectMediaPlayer;
 import uk.co.caprica.vlcj.player.direct.RenderCallbackAdapter;
 import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 /**
  * This simple test player shows how to get direct access to the video frame data.
@@ -53,6 +61,8 @@ import uk.co.caprica.vlcj.player.direct.format.RV32BufferFormat;
  */
 public class DirectTestPlayerOverlay {
 
+	List<Camera> cameraList = new ArrayList<Camera>();
+	
     // The size does NOT need to match the mediaPlayer size - it's the size that
     // the media will be scaled to
     // Matching the native size will be faster of course
@@ -82,12 +92,13 @@ public class DirectTestPlayerOverlay {
 
 	private final ImagePane imagePane;
 
-    public DirectTestPlayerOverlay(int width, int height, String[] args) throws InterruptedException, InvocationTargetException {
+    public DirectTestPlayerOverlay(List<Camera> cameraList ,int width, int height, String[] args) throws InterruptedException, InvocationTargetException {
         image = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().createCompatibleImage(width, height);
         image.setAccelerationPriority(1.0f);
         
         this.width = width;
         this.height = height;
+        this.cameraList = cameraList;
 
         imagePane = new ImagePane(image);
         imagePane.setSize(width, height);
@@ -96,6 +107,7 @@ public class DirectTestPlayerOverlay {
         
         factory = new MediaPlayerFactory(args);
         mediaPlayer = factory.newDirectMediaPlayer(new TestBufferFormatCallback(), new TestRenderCallback());
+        processdata();
     }
 
     @SuppressWarnings("serial")
@@ -126,21 +138,50 @@ public class DirectTestPlayerOverlay {
             
             
           g2.setColor(Color.red);
-          g2.setComposite(AlphaComposite.SrcOver.derive(0.3f));
+          g2.setComposite(AlphaComposite.SrcOver.derive(0.5f));
 
           Polygon polygon = new Polygon();
 //  		polygon.addPoint(393,537);
   		polygon.addPoint(516,507);
   		polygon.addPoint(778,630);
 //  		polygon.addPoint(700,690);
-  		g2.drawPolygon(polygon);
+//  		g2.drawPolygon(polygon);
   		
   		Polygon polygon2 = new Polygon();
   		polygon2.addPoint(518,505);
   		polygon2.addPoint(629,466);
   		polygon2.addPoint(861,555);
   		polygon2.addPoint(778,628);
-  		//g2.drawPolygon(polygon2);
+//  		g2.drawPolygon(polygon2);
+  		
+          
+          Camera camera = cameraList.get(0); 
+  		for (Iterator iterator = camera.getLineList().iterator(); iterator.hasNext();) {
+			Line line = (Line) iterator.next();
+			projectLine(line);
+			g.setColor(line.getColor());
+
+			Polygon polygon3 = new Polygon();
+			polygon3.addPoint((int) line.getProjectedStart().getX(), (int) line.getProjectedStart().getY());
+			polygon3.addPoint((int) line.getProjectedStart().getX() - 40, (int) line.getProjectedStart().getY());
+
+			polygon3.addPoint((int) line.getProjectedEnd().getX() - 40, (int) line.getProjectedEnd().getY());
+			polygon3.addPoint((int) line.getProjectedEnd().getX(), (int) line.getProjectedEnd().getY());
+			g2.fillPolygon(polygon3);
+
+		}
+
+		Font myFont = new Font ("Courier New", 1, 13);
+		g2.setFont (myFont);
+		g2.setColor(Color.BLACK);
+		g2.setComposite(AlphaComposite.SrcOver.derive(1f));
+		for (Iterator iterator = camera.getLineList().iterator(); iterator.hasNext();) {
+			Line line = (Line) iterator.next();
+			int countX = ((int)line.getProjectedStart().getX() -40 +(int)line.getProjectedEnd().getX())/2;
+			int countY = ((int)line.getProjectedStart().getY() +10 +(int)line.getProjectedEnd().getY())/2;
+			g2.drawString(line.getCount().toString(), countX, countY);
+			
+		}
             
         }
     }
@@ -204,14 +245,14 @@ public class DirectTestPlayerOverlay {
 //        	}
         	
             /* RGB to GRAYScale conversion example */
-            for(int i=0; i < data.length; i++){
-                int argb = data[i];
-                int b = (argb & 0xFF);
-                int g = ((argb >> 8 ) & 0xFF);
-                int r = ((argb >> 16 ) & 0xFF);
-                int grey = (r + g + b + g) >> 2 ; //performance optimized - not real grey!
-                data[i] = (grey << 16) + (grey << 8) + grey;
-            }
+//            for(int i=0; i < data.length; i++){
+//                int argb = data[i];
+//                int b = (argb & 0xFF);
+//                int g = ((argb >> 8 ) & 0xFF);
+//                int r = ((argb >> 16 ) & 0xFF);
+//                int grey = (r + g + b + g) >> 2 ; //performance optimized - not real grey!
+//                data[i] = (grey << 16) + (grey << 8) + grey;
+//            }
             imagePane.repaint();
         }
     }
@@ -223,5 +264,65 @@ public class DirectTestPlayerOverlay {
             return new RV32BufferFormat(width, height);
         }
 
+    }
+    
+    
+    public void processdata() {
+    	for (Camera camera : cameraList) {
+			for (Line line : camera.getLineList()) {
+				for (Long  duration : line.getData()) {
+				Timer timer = new Timer(duration.intValue(), new ActionListener() {
+					  @Override
+					  public void actionPerformed(ActionEvent arg0) {
+						lineCrossed(line.getId());
+					  }
+					});
+		    	timer.setRepeats(false); // Only execute once
+		    	timer.start(); // Go go go!
+				}
+			}
+		}
+    }
+    
+    public void lineCrossed(Long id) {
+    	Line line = getLineById(id);
+    	if(line!=null) {
+	    	line.setCount(line.getCount()+1);
+	    	line.setColor(Color.red);
+	    	restartPlayer(line.getCamera().getEmbeddedMediaPlayer());
+	    	System.out.println(line.getId()+ ":"+ line.getColor() +" yapıldı");
+	    	Timer timer = new Timer(100, new ActionListener() {
+				  @Override
+				  public void actionPerformed(ActionEvent arg0) {
+					line.setColor(Color.yellow);
+					restartPlayer(line.getCamera().getEmbeddedMediaPlayer());
+			    	
+				  }
+				});
+	    	timer.setRepeats(false); // Only execute once
+	    	timer.start(); // Go go go!
+    	}
+    }
+    
+    public Line getLineById(Long id) {
+    	Line result = null;
+    	for (Camera camera : cameraList) {
+        	for (Line line : camera.getLineList()) {
+				if(line.getId()==id)
+					result = line;
+			}
+		}
+    	
+    	return result;
+    }
+    
+    public void restartPlayer(EmbeddedMediaPlayer embeddedMediaPlayer) {
+//    	embeddedMediaPlayer.enableOverlay(false);
+//    	embeddedMediaPlayer.enableOverlay(true);
+    }
+    
+    public void projectLine(Line line) {
+    	line.getProjectedStart().setLocation(line.getStart().getX()-10,line.getStart().getY());
+		line.getProjectedEnd().setLocation(line.getEnd().getX()-10,line.getEnd().getY());
     }
 }

@@ -11,6 +11,9 @@ public class Line {
 	String name;
 	Point start;
 	Point end;
+	Point projectedStart = new Point();
+	Point projectedEnd = new Point();
+	
 	
 	Long count = 0l;
 	
@@ -68,6 +71,18 @@ public class Line {
 	}
 	public void setData(List<Long> data) {
 		this.data = data;
+	}
+	public Point getProjectedStart() {
+		return projectedStart;
+	}
+	public void setProjectedStart(Point projectedStart) {
+		this.projectedStart = projectedStart;
+	}
+	public Point getProjectedEnd() {
+		return projectedEnd;
+	}
+	public void setProjectedEnd(Point projectedEnd) {
+		this.projectedEnd = projectedEnd;
 	}
 	
 	

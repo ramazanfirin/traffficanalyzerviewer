@@ -25,6 +25,8 @@ public class Camera {
 	Canvas canvas;
 	
 	CanvasVideoSurface canvasVideoSurface;
+	
+	Boolean show = true;
 
 	public String getName() {
 		return name;
@@ -112,6 +114,14 @@ public class Camera {
 
 	public void setCanvasVideoSurface(CanvasVideoSurface canvasVideoSurface) {
 		this.canvasVideoSurface = canvasVideoSurface;
+	}
+
+	public Boolean getShow() {
+		return show;
+	}
+
+	public void setShow(Boolean show) {
+		this.show = show;
 	}
 	
 }
