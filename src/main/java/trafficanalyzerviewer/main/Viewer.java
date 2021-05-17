@@ -127,8 +127,13 @@ public class Viewer extends ViewerBase{
 		camera1.getLineList().add(line1);
 		camera1.setShow(true);
 		
-//		
-//		camera1.getLineList().add(line11);
+		Line line11 = new Line();
+		line11.setStart(new Point(300,400));
+		line11.setEnd(new Point(500,600));
+		line11.setId(1l);
+		line11.setCamera(camera1);
+//		line11.setData(Util.getCameraData());
+	camera1.getLineList().add(line11);
 		camera1.setConnectionUrl(kbb1);
 		
 		
