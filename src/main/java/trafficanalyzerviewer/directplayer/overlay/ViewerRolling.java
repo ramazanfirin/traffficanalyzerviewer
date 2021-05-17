@@ -17,6 +17,8 @@ import javax.swing.Timer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import trafficanalyzerviewer.camera.Camera;
+import trafficanalyzerviewer.directplayer.overlay.base.ViewerBase;
+import trafficanalyzerviewer.directplayer.overlay.base.ViewerOverlay;
 import trafficanalyzerviewer.service.CameraService;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.MediaPlayer;

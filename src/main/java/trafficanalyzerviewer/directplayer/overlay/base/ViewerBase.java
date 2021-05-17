@@ -1,4 +1,4 @@
-package trafficanalyzerviewer.directplayer.overlay;
+package trafficanalyzerviewer.directplayer.overlay.base;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;

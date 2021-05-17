@@ -17,7 +17,7 @@
  * Copyright 2009-2018 Caprica Software Limited.
  */
 
-package trafficanalyzerviewer.directplayer.overlay;
+package trafficanalyzerviewer.directplayer.overlay.base;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
