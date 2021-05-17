@@ -28,6 +28,10 @@ public class Camera {
 	
 	Boolean show = true;
 
+	Boolean processed = false;
+	
+	Boolean processData = true;
+	
 	public String getName() {
 		return name;
 	}
@@ -122,6 +126,22 @@ public class Camera {
 
 	public void setShow(Boolean show) {
 		this.show = show;
+	}
+
+	public Boolean getProcessed() {
+		return processed;
+	}
+
+	public void setProcessed(Boolean processed) {
+		this.processed = processed;
+	}
+
+	public Boolean getProcessData() {
+		return processData;
+	}
+
+	public void setProcessData(Boolean processData) {
+		this.processData = processData;
 	}
 	
 }

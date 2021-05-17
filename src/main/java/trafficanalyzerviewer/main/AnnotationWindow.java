@@ -97,9 +97,9 @@ public class AnnotationWindow extends JWindow{
 
 				Polygon polygon = new Polygon();
 				polygon.addPoint((int) line.getProjectedStart().getX(), (int) line.getProjectedStart().getY());
-				polygon.addPoint((int) line.getProjectedStart().getX() - 40, (int) line.getProjectedStart().getY());
+				polygon.addPoint((int) line.getProjectedStart().getX() + 40, (int) line.getProjectedStart().getY());
 
-				polygon.addPoint((int) line.getProjectedEnd().getX() - 40, (int) line.getProjectedEnd().getY());
+				polygon.addPoint((int) line.getProjectedEnd().getX() + 40, (int) line.getProjectedEnd().getY());
 				polygon.addPoint((int) line.getProjectedEnd().getX(), (int) line.getProjectedEnd().getY());
 				g2.fillPolygon(polygon);
 
@@ -111,7 +111,7 @@ public class AnnotationWindow extends JWindow{
     		g2.setComposite(AlphaComposite.SrcOver.derive(1f));
     		for (Iterator iterator = camera.getLineList().iterator(); iterator.hasNext();) {
     			Line line = (Line) iterator.next();
-    			int countX = ((int)line.getProjectedStart().getX() -40+(int)line.getProjectedEnd().getX())/2;
+    			int countX = ((int)line.getProjectedStart().getX() +40+(int)line.getProjectedEnd().getX())/2;
     			int countY = ((int)line.getProjectedStart().getY() +10 +(int)line.getProjectedEnd().getY())/2;
     			g2.drawString(line.getCount().toString(), countX, countY);
     			

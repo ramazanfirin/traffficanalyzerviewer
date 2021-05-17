@@ -19,45 +19,28 @@
 
 package trafficanalyzerviewer.main;
 
-import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.RenderingHints;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JWindow;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import com.sun.awt.AWTUtilities;
-import com.sun.jna.platform.WindowUtils;
-
 import trafficanalyzerviewer.camera.Camera;
 import trafficanalyzerviewer.camera.Line;
-import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -89,7 +72,7 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
  * <p>
  * Specify a single MRL to play on the command-line.
  */
-public abstract class ViewerBase {
+public abstract class ViewerBase extends MediaPlayerEventAdapter{
 	
 	Logger logger = LoggerFactory.getLogger(ViewerBase.class);
 	
@@ -105,6 +88,7 @@ public abstract class ViewerBase {
 	Frame f= new Frame("Test Player");
 	JPanel jPanel = new JPanel(); 
 	List<EmbeddedMediaPlayer> mediaPlayerList = new ArrayList<EmbeddedMediaPlayer>();
+	
 	
 //    public static void main(final String[] args) throws Exception {
 //    	new NativeDiscovery().discover();
@@ -131,21 +115,42 @@ public abstract class ViewerBase {
         addListeners();
         prepareCameras();
         addCameras();
-        processdata();
+        
     }
     
     public void processdata() {
     	for (Camera camera : cameraList) {
-			for (Line line : camera.getLineList()) {
-				for (Long  duration : line.getData()) {
-				Timer timer = new Timer(duration.intValue(), new ActionListener() {
-					  @Override
-					  public void actionPerformed(ActionEvent arg0) {
-						lineCrossed(line.getId());
-					  }
-					});
-		    	timer.setRepeats(false); // Only execute once
-		    	timer.start(); // Go go go!
+    		if(camera.getProcessData()) {
+				for (Line line : camera.getLineList()) {
+					for (Long  duration : line.getData()) {
+					Timer timer = new Timer(duration.intValue(), new ActionListener() {
+						  @Override
+						  public void actionPerformed(ActionEvent arg0) {
+							lineCrossed(line.getId());
+						  }
+						});
+			    	timer.setRepeats(false); // Only execute once
+			    	timer.start(); // Go go go!
+					}
+				}
+			}
+		}
+    }
+    
+    public void processdata(EmbeddedMediaPlayer embeddedMediaPlayer) {
+    	for (Camera camera : cameraList) {
+    		if(camera.getEmbeddedMediaPlayer().equals(embeddedMediaPlayer)) {
+				for (Line line : camera.getLineList()) {
+					for (Long  duration : line.getData()) {
+					Timer timer = new Timer(duration.intValue(), new ActionListener() {
+						  @Override
+						  public void actionPerformed(ActionEvent arg0) {
+							lineCrossed(line.getId());
+						  }
+						});
+			    	timer.setRepeats(false); // Only execute once
+			    	timer.start(); // Go go go!
+					}
 				}
 			}
 		}
@@ -177,9 +182,10 @@ public abstract class ViewerBase {
         AnnotationWindow aw = new AnnotationWindow(f, videoSurface.canvas(), mediaPlayer,camera);
         mediaPlayer.setOverlay(aw);
 //        mediaPlayer.enableOverlay(true);
+        mediaPlayer.addMediaPlayerEventListener(this);
         mediaPlayer.playMedia(camera.getConnectionUrl());
         mediaPlayer.pause();
-
+        
 //        mediaPlayer.setSubTitleFile(null);
         
 //        mediaPlayer.
@@ -284,5 +290,15 @@ public abstract class ViewerBase {
     	embeddedMediaPlayer.enableOverlay(true);
     }
     
+    @Override
+    public void playing(MediaPlayer mediaPlayer) {
+        System.out.println(new Date()+ "playing");
+//         processdata();
+        
+        EmbeddedMediaPlayer embeddedMediaPlayer = (EmbeddedMediaPlayer)mediaPlayer;
+        processdata(embeddedMediaPlayer);
+        embeddedMediaPlayer.enableOverlay(true);
+        
+    }
 }
 

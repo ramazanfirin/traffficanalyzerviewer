@@ -124,6 +124,7 @@ public class Viewer2 extends ViewerBase{
 		line1.setData(Util.getCameraData());
 		camera1.getLineList().add(line1);
 		camera1.setShow(true);
+		camera1.setProcessData(true);
 		
 //		
 //		camera1.getLineList().add(line11);
@@ -139,6 +140,7 @@ public class Viewer2 extends ViewerBase{
 		camera2.getLineList().add(line2);
 		camera2.setConnectionUrl(kbb2);
 		camera2.setShow(false);
+		camera2.setProcessData(false);
 		
 		Line line3 = new Line();
 		line3.setStart(new Point(600, 700));
@@ -149,6 +151,7 @@ public class Viewer2 extends ViewerBase{
 		camera3.getLineList().add(line3);
 		camera3.setConnectionUrl(kbb3);
 		camera3.setShow(false);
+		camera3.setProcessData(false);
 		
 		Line line4 = new Line();
 		line4.setStart(new Point(1100, 750));
@@ -159,6 +162,7 @@ public class Viewer2 extends ViewerBase{
 		camera4.getLineList().add(line4);
 		camera4.setConnectionUrl(kbb4);
 		camera4.setShow(false);
+		camera4.setProcessData(false);
 		
 		cameraList.add(camera1);
 		cameraList.add(camera2);
